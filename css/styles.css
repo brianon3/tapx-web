@@ -131,3 +131,8 @@
       color: var(--secondary);
       font-size: 0.9rem;
     }
+
+    .logo {
+    width: 140px;
+    margin-bottom: 20px;
+    }
