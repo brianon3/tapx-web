@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TapX — Alianzas inteligentes entre negocios</title>
+
+  <meta name="description" content="TapX conecta comercios para crear alianzas, packs y experiencias combinadas. Más ventas, más visibilidad, sin fricción." />
+
+  <style>
+    :root {
+      --primary: #111;
+      --secondary: #555;
+      --accent: #00d084;
+      --bg: #f7f7f7;
+      --card: #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--primary);
+    }
+
+    header {
+      padding: 80px 20px;
+      text-align: center;
+      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      color: white;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      max-width: 600px;
+      margin: 0 auto 30px;
+      color: #e0e0e0;
+    }
+
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .cta-buttons a {
+      padding: 15px 30px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: 0.2s ease;
+    }
+
+    .btn-primary {
+      background: var(--accent);
+      color: #000;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 2px solid white;
+      color: white;
+    }
+
+    section {
+      padding: 80px 20px;
+      max-width: 1100px;
+      margin: auto;
+    }
+
+    section h2 {
+      text-align: center;
+      font-size: 2.2rem;
+      margin-bottom: 50px;
+    }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+    }
+
+    .card {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    .card h3 {
+      margin-top: 0;
+    }
+
+    .forms {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 40px;
+    }
+
+    form {
+      background: var(--card);
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    }
+
+    form h3 {
+      margin-top: 0;
+      margin-bottom: 20px;
+    }
+
+    input, select, button {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 15px;
+      border-radius: 6px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+    }
+
+    button {
+      background: var(--accent);
+      border: none;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    footer {
+      text-align: center;
+      padding: 40px 20px;
+      color: var(--secondary);
+      font-size: 0.9rem;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO -->
+  <header>
+    <h1>TapX</h1>
+    <p>Conectamos negocios para crear alianzas inteligentes, packs y experiencias combinadas que generan más ventas y más valor.</p>
+    <div class="cta-buttons">
+      <a href="#comercios" class="btn-primary">Soy un comercio</a>
+      <a href="#usuarios" class="btn-secondary">Quiero usar TapX</a>
+    </div>
+  </header>
+
+  <!-- COMO FUNCIONA -->
+  <section>
+    <h2>¿Cómo funciona TapX?</h2>
+    <div class="steps">
+      <div class="card">
+        <h3>Para comercios</h3>
+        <p>Registrate, conectate con otros negocios compatibles y creá ofertas o experiencias conjuntas que atraigan nuevos clientes.</p>
+      </div>
+      <div class="card">
+        <h3>Alianzas inteligentes</h3>
+        <p>TapX facilita colaboraciones entre rubros como gastronomía, servicios y entretenimiento en un solo ecosistema.</p>
+      </div>
+      <div class="card">
+        <h3>Para usuarios</h3>
+        <p>Descubrí packs exclusivos, ahorrá dinero y probá nuevas experiencias desde una única app.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- REGISTROS -->
+  <section>
+    <h2>Sumate a TapX</h2>
+    <div class="forms">
+
+      <!-- COMERCIOS -->
+      <form id="comercios">
+        <h3>Registro de comercios</h3>
+        <input type="text" placeholder="Nombre del comercio" required />
+        <select required>
+          <option value="">Rubro</option>
+          <option>Cafetería</option>
+          <option>Heladería</option>
+          <option>Restaurante</option>
+          <option>Otro</option>
+        </select>
+        <input type="text" placeholder="Ciudad" required />
+        <input type="text" placeholder="Nombre de contacto" required />
+        <input type="email" placeholder="Email" required />
+        <input type="tel" placeholder="Teléfono (opcional)" />
+        <button type="submit">Quiero formar parte</button>
+      </form>
+
+      <!-- USUARIOS -->
+      <form id="usuarios">
+        <h3>Usuarios interesados</h3>
+        <input type="text" placeholder="Nombre" required />
+        <input type="email" placeholder="Email" required />
+        <input type="text" placeholder="Ciudad" />
+        <button type="submit">Avisame cuando esté disponible</button>
+      </form>
+
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 TapX — Proyecto en etapa temprana.  
+    <br/>Contacto: hello@tapx.app
+  </footer>
+
+</body>
+</html>

@@ -1,2 +1,3 @@
-# tapx-web
-Landing oficial de TapX.
+# TapX Web
+
+Landing page oficial del proyecto TapX.
