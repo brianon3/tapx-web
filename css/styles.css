@@ -283,3 +283,15 @@ footer {
     border-radius: 16px;
   }
 }
+
+
+
+
+img {
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+img.loaded {
+  opacity: 1;
+}
