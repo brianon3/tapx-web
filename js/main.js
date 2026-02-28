@@ -1,107 +1,115 @@
-// main.js — TAPX 5.3 FINAL (SUPABASE V2 MODULE)
+// main.js — TAPX 5.3 iOS SAFE
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
-/* ===============================
-   SUPABASE INIT
-=============================== */
-const SUPABASE_URL = "https://ywxpvbkwlblrcyxuxsop.supabase.co";
-const SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3eHB2Ymt3bGJscmN5eHV4c29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjA2MzIsImV4cCI6MjA4Nzc5NjYzMn0.9qbiglW-JrYySXhsA0CTlZkVamF_tC95s5byyVqxSmc";
+document.addEventListener("DOMContentLoaded", () => {
+  try {
 
-const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-console.log("✅ Supabase conectado", supabase);
+    /* ===============================
+       SUPABASE INIT
+    =============================== */
+    const SUPABASE_URL = "https://ywxpvbkwlblrcyxuxsop.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3eHB2Ymt3bGJscmN5eHV4c29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjA2MzIsImV4cCI6MjA4Nzc5NjYzMn0.9qbiglW-JrYySXhsA0CTlZkVamF_tC95s5byyVqxSmc";
 
-/* ===============================
-   TOASTS
-=============================== */
-const toastContainer = document.getElementById("toast-container");
+    const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log("✅ Supabase conectado");
 
-function mostrarToast(msg, tipo = "success") {
-  if (!toastContainer) return;
+    /* ===============================
+       TOASTS
+    =============================== */
+    const toastContainer = document.getElementById("toast-container");
 
-  const toast = document.createElement("div");
-  toast.className = `toast ${tipo}`;
-  toast.textContent = msg;
+    function mostrarToast(msg, tipo) {
+      if (!toastContainer) return;
 
-  toastContainer.appendChild(toast);
-  requestAnimationFrame(() => toast.classList.add("show"));
+      const toast = document.createElement("div");
+      toast.className = "toast " + (tipo || "success");
+      toast.textContent = msg;
 
-  setTimeout(() => {
-    toast.classList.remove("show");
-    toast.addEventListener("transitionend", () => toast.remove());
-  }, 3000);
-}
+      toastContainer.appendChild(toast);
+      setTimeout(() => toast.classList.add("show"), 10);
 
-/* ===============================
-   VALIDACIÓN
-=============================== */
-function validarFormulario(form) {
-  let ok = true;
-
-  form.querySelectorAll("input, select").forEach(el => {
-    if (!el.required) return;
-
-    if (!el.value.trim()) {
-      el.classList.add("input-error");
-      ok = false;
-    } else {
-      el.classList.remove("input-error");
+      setTimeout(() => {
+        toast.classList.remove("show");
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
     }
-  });
 
-  return ok;
-}
+    /* ===============================
+       VALIDACIÓN
+    =============================== */
+    function validarFormulario(form) {
+      let ok = true;
 
-/* ===============================
-   ENVÍO A SUPABASE
-=============================== */
-async function enviarFormulario(form, tabla, mensaje) {
-  const datos = Object.fromEntries(
-    [...form.elements]
-      .filter(el => el.name)
-      .map(el => [el.name, el.value.trim()])
-  );
+      Array.prototype.forEach.call(
+        form.querySelectorAll("input, select"),
+        el => {
+          if (!el.required) return;
 
-  console.log("📤 Insertando en", tabla, datos);
+          if (!el.value || !el.value.trim()) {
+            el.classList.add("input-error");
+            ok = false;
+          } else {
+            el.classList.remove("input-error");
+          }
+        }
+      );
 
-  const { error } = await supabase.from(tabla).insert([datos]);
+      return ok;
+    }
 
-  if (error) {
-    console.error("❌ Supabase error:", error);
-    mostrarToast(error.message, "error");
-    return;
-  }
+    /* ===============================
+       ENVÍO A SUPABASE (iOS SAFE)
+    =============================== */
+    async function enviarFormulario(form, tabla, mensaje) {
+      const datos = {};
 
-  mostrarToast(mensaje, "success");
-  form.reset();
-}
+      Array.prototype.forEach.call(form.elements, el => {
+        if (el.name) {
+          datos[el.name] = el.value ? el.value.trim() : "";
+        }
+      });
 
-/* ===============================
-   EVENTOS
-=============================== */
-document.getElementById("comercios")?.addEventListener("submit", e => {
-  e.preventDefault();
-  if (validarFormulario(e.target)) {
-    enviarFormulario(
-      e.target,
-      "comercios",
-      "Gracias por registrar tu comercio"
-    );
-  } else {
-    mostrarToast("Revisá los campos", "error");
-  }
-});
+      console.log("📤 Insertando en", tabla, datos);
 
-document.getElementById("usuarios")?.addEventListener("submit", e => {
-  e.preventDefault();
-  if (validarFormulario(e.target)) {
-    enviarFormulario(
-      e.target,
-      "usuarios",
-      "Gracias por tu interés"
-    );
-  } else {
-    mostrarToast("Revisá los campos", "error");
+      const result = await supabase.from(tabla).insert([datos]);
+
+      if (result.error) {
+        console.error("❌ Supabase:", result.error);
+        mostrarToast("Error al enviar", "error");
+        return;
+      }
+
+      mostrarToast(mensaje, "success");
+      form.reset();
+    }
+
+    /* ===============================
+       EVENTOS
+    =============================== */
+    const comercios = document.getElementById("comercios");
+    if (comercios) {
+      comercios.addEventListener("submit", e => {
+        e.preventDefault();
+        validarFormulario(e.target)
+          ? enviarFormulario(e.target, "comercios", "Gracias por registrar tu comercio")
+          : mostrarToast("Revisá los campos", "error");
+      });
+    }
+
+    const usuarios = document.getElementById("usuarios");
+    if (usuarios) {
+      usuarios.addEventListener("submit", e => {
+        e.preventDefault();
+        validarFormulario(e.target)
+          ? enviarFormulario(e.target, "usuarios", "Gracias por tu interés")
+          : mostrarToast("Revisá los campos", "error");
+      });
+    }
+
+  } catch (err) {
+    console.error("🔥 Error JS:", err);
+    alert("Error en el navegador. Actualizá Safari.");
   }
 });
