@@ -1,17 +1,33 @@
-// main.js
+// main.js — TAPX 5.0 PRODUCCIÓN
 document.addEventListener("DOMContentLoaded", () => {
-
   /* ===============================
      INICIALIZAR SUPABASE
-     =============================== */
-  const SUPABASE_URL = "tapx-web.vercel.app"; // tu URL de Supabase
-  const SUPABASE_ANON_KEY = "sb_publishable_o3gkafnJ-gxeqX-ZcEeIeg_tn0Am7Ue"; // tu anon/public key
+  =============================== */
+  const SUPABASE_URL = "https://TU_PROJECT.supabase.co";
+  const SUPABASE_ANON_KEY = "TU_ANON_KEY";
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
   /* ===============================
-     FUNCIONES DE VALIDACIÓN
-     =============================== */
-  function validarCampo(input) {
+     TOASTS PROFESIONALES
+  =============================== */
+  const toastContainer = document.getElementById("toast-container");
+  function mostrarToast(msg, tipo = "success") {
+    if (!toastContainer) return;
+    const toast = document.createElement("div");
+    toast.className = `toast ${tipo}`;
+    toast.textContent = msg;
+    toastContainer.appendChild(toast);
+    requestAnimationFrame(() => toast.classList.add("show"));
+    setTimeout(() => {
+      toast.classList.remove("show");
+      toast.addEventListener("transitionend", () => toast.remove());
+    }, 3000);
+  }
+
+  /* ===============================
+     VALIDACIÓN DE FORMULARIOS
+  =============================== */
+  const validarCampo = input => {
     if (!input.value.trim()) {
       input.classList.add("input-error");
       return false;
@@ -19,9 +35,9 @@ document.addEventListener("DOMContentLoaded", () => {
       input.classList.remove("input-error");
       return true;
     }
-  }
+  };
 
-  function validarEmail(input) {
+  const validarEmail = input => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!re.test(input.value.trim())) {
       input.classList.add("input-error");
@@ -30,9 +46,9 @@ document.addEventListener("DOMContentLoaded", () => {
       input.classList.remove("input-error");
       return true;
     }
-  }
+  };
 
-  function validarFormulario(form) {
+  const validarFormulario = form => {
     let valido = true;
     form.querySelectorAll("input, select").forEach(field => {
       if (field.required) {
@@ -44,76 +60,66 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
     return valido;
-  }
+  };
 
   /* ===============================
-     MANEJO DE FORMULARIOS
-     =============================== */
-  const formComercios = document.getElementById("comercios");
-  const formUsuarios = document.getElementById("usuarios");
-
+     ENVÍO DE FORMULARIOS
+  =============================== */
   async function enviarFormulario(form, tabla, mensajeExito) {
-    const feedback = form.querySelector(".form-feedback");
-    if (feedback) feedback.remove();
+    const feedbackPrevio = form.querySelector(".form-feedback");
+    if (feedbackPrevio) feedbackPrevio.remove();
 
-    const feedbackEl = document.createElement("div");
-    feedbackEl.className = "form-feedback";
-    feedbackEl.textContent = "Enviando...";
-    form.appendChild(feedbackEl);
+    const feedback = document.createElement("div");
+    feedback.className = "form-feedback";
+    feedback.textContent = "Enviando...";
+    form.appendChild(feedback);
 
-    const fields = Object.fromEntries(
+    const datos = Object.fromEntries(
       Array.from(form.elements)
         .filter(el => el.name)
         .map(el => [el.name, el.value.trim()])
     );
 
     try {
-      const { error } = await supabase.from(tabla).insert([fields]);
+      const { error } = await supabase.from(tabla).insert([datos]);
       if (error) throw error;
 
-      feedbackEl.classList.add("success");
-      feedbackEl.textContent = mensajeExito;
+      feedback.classList.add("success");
+      feedback.textContent = mensajeExito;
       form.reset();
       form.querySelectorAll(".input-error").forEach(el => el.classList.remove("input-error"));
+      mostrarToast(mensajeExito, "success");
     } catch (err) {
-      feedbackEl.classList.add("error");
-      feedbackEl.textContent = "Hubo un error al enviar tu información. Intenta nuevamente.";
-      console.error(Error al registrar en ${tabla}:, err.message);
+      feedback.classList.add("error");
+      feedback.textContent = "Hubo un error al enviar tu información.";
+      console.error(`Error en ${tabla}:`, err.message);
+      mostrarToast("Error al enviar. Intenta nuevamente.", "error");
     }
   }
 
-  formComercios?.addEventListener("submit", async (e) => {
+  /* ===============================
+     EVENTOS SUBMIT
+  =============================== */
+  const formComercios = document.getElementById("comercios");
+  const formUsuarios = document.getElementById("usuarios");
+
+  formComercios?.addEventListener("submit", e => {
     e.preventDefault();
-    if (validarFormulario(formComercios)) {
-      await enviarFormulario(formComercios, "comercios", "Gracias por registrar tu comercio. Pronto nos contactaremos.");
-    } else {
-      if (!formComercios.querySelector(".form-feedback")) {
-        const f = document.createElement("div");
-        f.className = "form-feedback error";
-        f.textContent = "Por favor, completa todos los campos correctamente.";
-        formComercios.appendChild(f);
-      }
-    }
+    validarFormulario(formComercios)
+      ? enviarFormulario(formComercios, "comercios", "Gracias por registrar tu comercio. Pronto nos contactaremos.")
+      : mostrarToast("Completa todos los campos correctamente.", "error");
   });
 
-  formUsuarios?.addEventListener("submit", async (e) => {
+  formUsuarios?.addEventListener("submit", e => {
     e.preventDefault();
-    if (validarFormulario(formUsuarios)) {
-      await enviarFormulario(formUsuarios, "usuarios", "Gracias por tu interés. Te avisaremos cuando TapX esté disponible.");
-    } else {
-      if (!formUsuarios.querySelector(".form-feedback")) {
-        const f = document.createElement("div");
-        f.className = "form-feedback error";
-        f.textContent = "Por favor, completa todos los campos correctamente.";
-        formUsuarios.appendChild(f);
-      }
-    }
+    validarFormulario(formUsuarios)
+      ? enviarFormulario(formUsuarios, "usuarios", "Gracias por tu interés. Te avisaremos cuando TapX esté disponible.")
+      : mostrarToast("Completa todos los campos correctamente.", "error");
   });
 
   /* ===============================
      LAZY LOAD DE IMÁGENES
-     Solo imágenes con data-src
-     =============================== */
+  =============================== */
   const lazyImages = document.querySelectorAll("img[data-src]");
   if ("IntersectionObserver" in window) {
     const observer = new IntersectionObserver((entries, obs) => {
@@ -126,8 +132,7 @@ document.addEventListener("DOMContentLoaded", () => {
           obs.unobserve(img);
         }
       });
-    }, { rootMargin: "150px" });
-
+    }, { rootMargin: "200px" });
     lazyImages.forEach(img => observer.observe(img));
   } else {
     lazyImages.forEach(img => {
@@ -136,4 +141,21 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
+  /* ===============================
+     SCROLL REVEAL (Opcional)
+  =============================== */
+  if (window.ScrollReveal) {
+    ScrollReveal().reveal(
+      'header h1, header p, .hero-image, section h2, .section-image, .card, form',
+      {
+        distance: '50px',
+        origin: 'bottom',
+        opacity: 0,
+        duration: 900,
+        easing: 'cubic-bezier(0.5,0,0,1)',
+        interval: 150,
+        reset: false
+      }
+    );
+  }
 });
