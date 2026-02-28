@@ -17,13 +17,12 @@
 
     <h1>Alianzas que venden más</h1>
     <p>
-      TapX conecta negocios locales para crear <strong>sinergias comerciales reales</strong>:  
-      promociones conjuntas, packs compartidos y experiencias combinadas  
+      TapX conecta negocios locales para crear <strong>sinergias comerciales reales</strong>:
+      promociones conjuntas, packs compartidos y experiencias combinadas
       que atraen más clientes, aumentan el ticket promedio y generan fidelidad.
     </p>
 
-    <!-- IMAGEN HERO -->
-    <img 
+    <img
       src="imagenhero.png"
       alt="Red de negocios conectados generando crecimiento conjunto"
       class="section-image hero-image"
@@ -42,10 +41,9 @@
   <section>
     <h2>El desafío silencioso de los comercios locales</h2>
 
-    <!-- IMAGEN PROBLEMA -->
-    <img 
-      src="imagenproblemadolor.png" 
-      alt="Comercios aislados enfrentando dificultades para crecer" 
+    <img
+      src="imagenproblemadolor.png"
+      alt="Comercios aislados enfrentando dificultades para crecer"
       class="section-image"
     />
 
@@ -65,14 +63,13 @@
     </div>
   </section>
 
-  <!-- SOLUCION -->
+  <!-- SOLUCIÓN -->
   <section>
     <h2>La solución: sinergia comercial inteligente</h2>
 
-    <!-- IMAGEN SOLUCIÓN -->
-    <img 
-      src="imagensolucionsinergia.png" 
-      alt="Negocios conectados generando sinergia y crecimiento mutuo" 
+    <img
+      src="imagensolucionsinergia.png"
+      alt="Negocios conectados generando sinergia y crecimiento mutuo"
       class="section-image"
     />
 
@@ -96,34 +93,24 @@
   <section>
     <h2>Cómo se usa TapX en la vida real</h2>
 
-    <!-- IMAGEN CASOS DE USO -->
-    <img 
-      src="casosdeuso.png" 
-      alt="Ejemplos de alianzas entre distintos tipos de negocios" 
+    <img
+      src="casosdeuso.png"
+      alt="Ejemplos de alianzas entre distintos tipos de negocios"
       class="section-image"
     />
 
     <div class="steps">
       <div class="card">
         <h3>Cafetería + Heladería</h3>
-        <p>
-          Pack “Café & Helado” para atraer clientes durante todo el día  
-          y aumentar el ticket promedio.
-        </p>
+        <p>Pack “Café & Helado” para atraer clientes durante todo el día.</p>
       </div>
       <div class="card">
         <h3>Restaurante + Gimnasio</h3>
-        <p>
-          “Cena saludable + clase gratis” para fidelizar clientes activos  
-          y generar recurrencia.
-        </p>
+        <p>“Cena saludable + clase gratis” para generar recurrencia.</p>
       </div>
       <div class="card">
         <h3>Bar + Evento cultural</h3>
-        <p>
-          “Entrada + consumición” para noches temáticas con alto tráfico  
-          y mayor visibilidad.
-        </p>
+        <p>“Entrada + consumición” para noches de alto tráfico.</p>
       </div>
     </div>
   </section>
@@ -132,10 +119,9 @@
   <section>
     <h2>Todos ganan con TapX</h2>
 
-    <!-- IMAGEN BENEFICIOS -->
-    <img 
-      src="beneficiosgananciaclara.png" 
-      alt="Beneficios claros para comercios y usuarios" 
+    <img
+      src="beneficiosgananciaclara.png"
+      alt="Beneficios claros para comercios y usuarios"
       class="section-image"
     />
 
@@ -159,14 +145,13 @@
     </div>
   </section>
 
-  <!-- REGISTROS -->
+  <!-- REGISTRO -->
   <section>
     <h2>Sumate a TapX</h2>
 
-    <!-- IMAGEN FUTURO / REGISTRO -->
-    <img 
-      src="registrofuturo.png" 
-      alt="Acceso anticipado y crecimiento futuro con TapX" 
+    <img
+      src="registrofuturo.png"
+      alt="Acceso anticipado y crecimiento futuro con TapX"
       class="section-image"
     />
 
@@ -177,31 +162,53 @@
         <h3>Registro de comercios</h3>
         <p>Accedé antes que nadie a la red de alianzas TapX.</p>
 
-        <input type="text" placeholder="Nombre del comercio" required />
-        <select required>
-          <option value="">Rubro</option>
+        <input name="nombre_comercio" type="text" placeholder="Nombre del comercio" required />
+        <select name="rubro" required>
+          <option value="" disabled selected>Rubro</option>
           <option>Cafetería</option>
           <option>Heladería</option>
           <option>Restaurante</option>
           <option>Servicios</option>
           <option>Otro</option>
         </select>
-        <input type="text" placeholder="Ciudad" required />
-        <input type="text" placeholder="Nombre de contacto" required />
-        <input type="email" placeholder="Email" required />
-        <input type="tel" placeholder="Teléfono (opcional)" />
 
-        <button type="submit">Quiero generar alianzas</button>
+        <input name="ciudad" type="text" placeholder="Ciudad" required />
+        <input name="nombre_contacto" type="text" placeholder="Nombre de contacto" required />
+        <input name="email" type="email" placeholder="Email del comercio" required />
+
+        <select name="tipo_documento" required>
+          <option value="" disabled selected>Tipo de identificación</option>
+          <option value="rut">RUT / CUIT / RFC</option>
+          <option value="cedula">Cédula de identidad</option>
+          <option value="dni">DNI</option>
+          <option value="pasaporte">Pasaporte</option>
+          <option value="otro">Otro</option>
+        </select>
+
+        <input name="numero_documento" type="text" placeholder="Número de identificación" required />
+        <input name="telefono" type="tel" placeholder="Teléfono de contacto" required />
+
+        <button type="submit">Registrar comercio</button>
       </form>
 
       <!-- USUARIOS -->
       <form id="usuarios">
         <h3>Usuarios interesados</h3>
-        <p>Enterate primero cuando TapX esté disponible en tu ciudad.</p>
+        <p>Enterate primero cuando TapX esté disponible.</p>
 
-        <input type="text" placeholder="Nombre" required />
-        <input type="email" placeholder="Email" required />
-        <input type="text" placeholder="Ciudad" />
+        <input name="nombre" type="text" placeholder="Nombre completo" required />
+        <input name="email" type="email" placeholder="Email" required />
+
+        <select name="tipo_documento" required>
+          <option value="" disabled selected>Tipo de documento</option>
+          <option value="cedula">Cédula de identidad</option>
+          <option value="dni">DNI</option>
+          <option value="pasaporte">Pasaporte</option>
+          <option value="otro">Otro</option>
+        </select>
+
+        <input name="numero_documento" type="text" placeholder="Número de documento" required />
+        <input name="telefono" type="tel" placeholder="Teléfono de contacto" required />
 
         <button type="submit">Quiero acceso anticipado</button>
       </form>
@@ -211,7 +218,7 @@
 
   <!-- FOOTER -->
   <footer>
-    © 2026 TapX — Plataforma de alianzas comerciales inteligentes.  
+    © 2026 TapX — Plataforma de alianzas comerciales inteligentes  
     <br/>Contacto: hello.tapx@gmail.com
   </footer>
 
