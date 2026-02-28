@@ -1,4 +1,4 @@
-// main.js — TAPX 5.1 FINAL
+// main.js — TAPX 5.1 FINAL FIXED
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ===============================
@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!toastContainer) return;
 
     const toast = document.createElement("div");
-    toast.className = toast ${tipo};
+    toast.className = `toast ${tipo}`;
     toast.textContent = msg;
 
     toastContainer.appendChild(toast);
@@ -49,7 +49,12 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const validarEmail = el => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return validarCampo(el) && re.test(el.value);
+    if (!re.test(el.value.trim())) {
+      el.classList.add("input-error");
+      return false;
+    }
+    el.classList.remove("input-error");
+    return true;
   };
 
   const validarFormulario = form => {
@@ -116,8 +121,11 @@ document.addEventListener("DOMContentLoaded", () => {
   formComercios?.addEventListener("submit", e => {
     e.preventDefault();
     if (validarFormulario(formComercios)) {
-      enviarFormulario(formComercios, "comercios",
-        "Gracias por registrar tu comercio.");
+      enviarFormulario(
+        formComercios,
+        "comercios",
+        "Gracias por registrar tu comercio."
+      );
     } else {
       mostrarToast("Revisá los campos", "error");
     }
@@ -126,8 +134,11 @@ document.addEventListener("DOMContentLoaded", () => {
   formUsuarios?.addEventListener("submit", e => {
     e.preventDefault();
     if (validarFormulario(formUsuarios)) {
-      enviarFormulario(formUsuarios, "usuarios",
-        "Gracias por tu interés.");
+      enviarFormulario(
+        formUsuarios,
+        "usuarios",
+        "Gracias por tu interés."
+      );
     } else {
       mostrarToast("Revisá los campos", "error");
     }
