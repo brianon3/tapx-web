@@ -1,4 +1,6 @@
-// main.js — TAPX 5.1 FINAL
+// main.js — TAPX 5.2 FINAL (SUPABASE V2 REAL)
+import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
+
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ===============================
@@ -7,13 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const SUPABASE_URL = "https://ywxpvbkwlblrcyxuxsop.supabase.co";
   const SUPABASE_ANON_KEY = "PEGA_ACA_TU_ANON_PUBLIC_KEY_REAL";
 
-  // 👇 IMPORTANTE: Supabase v2 se expone como "supabase", no window.supabase
-  if (typeof supabase === "undefined") {
-    console.error("❌ Supabase no está cargado");
-    return;
-  }
-
-  const supabaseClient = supabase.createClient(
+  const supabaseClient = createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
@@ -84,7 +80,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     console.log("📤 Insertando en:", tabla, datos);
 
-    const { data, error } = await supabaseClient
+    const { error } = await supabaseClient
       .from(tabla)
       .insert([datos]);
 
@@ -94,7 +90,6 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    console.log("✅ Insert OK:", data);
     mostrarToast(mensaje, "success");
     form.reset();
   }
@@ -105,34 +100,30 @@ document.addEventListener("DOMContentLoaded", () => {
   const formComercios = document.getElementById("comercios");
   const formUsuarios = document.getElementById("usuarios");
 
-  if (formComercios) {
-    formComercios.addEventListener("submit", e => {
-      e.preventDefault();
-      if (validarFormulario(formComercios)) {
-        enviarFormulario(
-          formComercios,
-          "comercios",
-          "Gracias por registrar tu comercio"
-        );
-      } else {
-        mostrarToast("Revisá los campos", "error");
-      }
-    });
-  }
+  formComercios?.addEventListener("submit", e => {
+    e.preventDefault();
+    if (validarFormulario(formComercios)) {
+      enviarFormulario(
+        formComercios,
+        "comercios",
+        "Gracias por registrar tu comercio"
+      );
+    } else {
+      mostrarToast("Revisá los campos", "error");
+    }
+  });
 
-  if (formUsuarios) {
-    formUsuarios.addEventListener("submit", e => {
-      e.preventDefault();
-      if (validarFormulario(formUsuarios)) {
-        enviarFormulario(
-          formUsuarios,
-          "usuarios",
-          "Gracias por tu interés"
-        );
-      } else {
-        mostrarToast("Revisá los campos", "error");
-      }
-    });
-  }
+  formUsuarios?.addEventListener("submit", e => {
+    e.preventDefault();
+    if (validarFormulario(formUsuarios)) {
+      enviarFormulario(
+        formUsuarios,
+        "usuarios",
+        "Gracias por tu interés"
+      );
+    } else {
+      mostrarToast("Revisá los campos", "error");
+    }
+  });
 
 });
