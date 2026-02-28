@@ -1,19 +1,21 @@
-// main.js — TAPX 5.1 FIXED PRODUCCIÓN
+// main.js — TAPX 5.1 FINAL
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ===============================
-     INICIALIZAR SUPABASE (FIX)
+     SUPABASE INIT
   =============================== */
   const SUPABASE_URL = "https://ywxpvbkwlblrcyxuxsop.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3eHB2Ymt3bGJscmN5eHV4c29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjA2MzIsImV4cCI6MjA4Nzc5NjYzMn0.9qbiglW-JrYySXhsA0CTlZkVamF_tC95s5byyVqxSmc";
+  const SUPABASE_ANON_KEY = "TU_ANON_KEY_REAL";
 
   const supabaseClient = window.supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
 
+  console.log("Supabase conectado:", supabaseClient);
+
   /* ===============================
-     TOASTS PROFESIONALES
+     TOASTS
   =============================== */
   const toastContainer = document.getElementById("toast-container");
 
@@ -21,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (!toastContainer) return;
 
     const toast = document.createElement("div");
-    toast.className = `toast ${tipo}`;
+    toast.className = toast ${tipo};
     toast.textContent = msg;
 
     toastContainer.appendChild(toast);
@@ -30,49 +32,44 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
       toast.classList.remove("show");
       toast.addEventListener("transitionend", () => toast.remove());
-    }, 3200);
+    }, 3000);
   }
 
   /* ===============================
      VALIDACIÓN
   =============================== */
-  const validarCampo = input => {
-    if (!input.value.trim()) {
-      input.classList.add("input-error");
+  const validarCampo = el => {
+    if (!el.value.trim()) {
+      el.classList.add("input-error");
       return false;
     }
-    input.classList.remove("input-error");
+    el.classList.remove("input-error");
     return true;
   };
 
-  const validarEmail = input => {
+  const validarEmail = el => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!re.test(input.value.trim())) {
-      input.classList.add("input-error");
-      return false;
-    }
-    input.classList.remove("input-error");
-    return true;
+    return validarCampo(el) && re.test(el.value);
   };
 
   const validarFormulario = form => {
-    let valido = true;
-    form.querySelectorAll("input, select").forEach(field => {
-      if (!field.required) return;
-
-      if (field.type === "email") {
-        if (!validarEmail(field)) valido = false;
+    let ok = true;
+    form.querySelectorAll("input, select").forEach(el => {
+      if (!el.required) return;
+      if (el.type === "email") {
+        if (!validarEmail(el)) ok = false;
       } else {
-        if (!validarCampo(field)) valido = false;
+        if (!validarCampo(el)) ok = false;
       }
     });
-    return valido;
+    return ok;
   };
 
   /* ===============================
-     ENVÍO A SUPABASE
+     ENVÍO
   =============================== */
-  async function enviarFormulario(form, tabla, mensajeExito) {
+  async function enviarFormulario(form, tabla, mensaje) {
+
     const feedbackPrevio = form.querySelector(".form-feedback");
     if (feedbackPrevio) feedbackPrevio.remove();
 
@@ -82,35 +79,32 @@ document.addEventListener("DOMContentLoaded", () => {
     form.appendChild(feedback);
 
     const datos = Object.fromEntries(
-      Array.from(form.elements)
+      [...form.elements]
         .filter(el => el.name)
         .map(el => [el.name, el.value.trim()])
     );
 
-    try {
-      const { error } = await supabaseClient
-        .from(tabla)
-        .insert([datos]);
+    console.log("Insertando en:", tabla, datos);
 
-      if (error) throw error;
+    const { data, error } = await supabaseClient
+      .from(tabla)
+      .insert([datos])
+      .select();
 
-      feedback.classList.add("success");
-      feedback.textContent = mensajeExito;
-
-      form.reset();
-      form.querySelectorAll(".input-error")
-        .forEach(el => el.classList.remove("input-error"));
-
-      mostrarToast(mensajeExito, "success");
-
-    } catch (err) {
-      console.error(`Error Supabase (${tabla}):`, err.message);
-
+    if (error) {
+      console.error("ERROR SUPABASE:", error);
       feedback.classList.add("error");
-      feedback.textContent = "No se pudo enviar el formulario. Intenta nuevamente.";
-
-      mostrarToast("Error al enviar. Revisá los datos.", "error");
+      feedback.textContent = error.message;
+      mostrarToast("Error al enviar", "error");
+      return;
     }
+
+    console.log("INSERT OK:", data);
+
+    feedback.classList.add("success");
+    feedback.textContent = mensaje;
+    form.reset();
+    mostrarToast(mensaje, "success");
   }
 
   /* ===============================
@@ -121,44 +115,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   formComercios?.addEventListener("submit", e => {
     e.preventDefault();
-
-    validarFormulario(formComercios)
-      ? enviarFormulario(
-          formComercios,
-          "comercios",
-          "Gracias por registrar tu comercio. Pronto nos contactaremos."
-        )
-      : mostrarToast("Completá todos los campos correctamente.", "error");
+    if (validarFormulario(formComercios)) {
+      enviarFormulario(formComercios, "comercios",
+        "Gracias por registrar tu comercio.");
+    } else {
+      mostrarToast("Revisá los campos", "error");
+    }
   });
 
   formUsuarios?.addEventListener("submit", e => {
     e.preventDefault();
-
-    validarFormulario(formUsuarios)
-      ? enviarFormulario(
-          formUsuarios,
-          "usuarios",
-          "Gracias por tu interés. Te avisaremos cuando TapX esté disponible."
-        )
-      : mostrarToast("Completá todos los campos correctamente.", "error");
+    if (validarFormulario(formUsuarios)) {
+      enviarFormulario(formUsuarios, "usuarios",
+        "Gracias por tu interés.");
+    } else {
+      mostrarToast("Revisá los campos", "error");
+    }
   });
-
-  /* ===============================
-     SCROLL REVEAL
-  =============================== */
-  if (window.ScrollReveal) {
-    ScrollReveal().reveal(
-      'header h1, header p, .hero-image, section h2, .section-image, .card, form',
-      {
-        distance: '50px',
-        origin: 'bottom',
-        opacity: 0,
-        duration: 900,
-        easing: 'cubic-bezier(0.5,0,0,1)',
-        interval: 120,
-        reset: false
-      }
-    );
-  }
 
 });
