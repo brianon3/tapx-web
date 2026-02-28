@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", () => {
   /* ===============================
      INICIALIZAR SUPABASE
      =============================== */
-  const SUPABASE_URL = "https://tapx-web.vercel.app"; // tu URL de Supabase
+  const SUPABASE_URL = "tapx-web.vercel.app"; // tu URL de Supabase
   const SUPABASE_ANON_KEY = "sb_publishable_o3gkafnJ-gxeqX-ZcEeIeg_tn0Am7Ue"; // tu anon/public key
   const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
