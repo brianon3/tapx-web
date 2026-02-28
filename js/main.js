@@ -1,18 +1,24 @@
-// main.js — TAPX 5.1 FINAL FIXED
+// main.js — TAPX 5.1 FINAL
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ===============================
      SUPABASE INIT
   =============================== */
   const SUPABASE_URL = "https://ywxpvbkwlblrcyxuxsop.supabase.co";
-  const SUPABASE_ANON_KEY = "TU_ANON_KEY_REAL";
+  const SUPABASE_ANON_KEY = "PEGA_ACA_TU_ANON_PUBLIC_KEY_REAL";
 
-  const supabaseClient = window.supabase.createClient(
+  // 👇 IMPORTANTE: Supabase v2 se expone como "supabase", no window.supabase
+  if (typeof supabase === "undefined") {
+    console.error("❌ Supabase no está cargado");
+    return;
+  }
+
+  const supabaseClient = supabase.createClient(
     SUPABASE_URL,
     SUPABASE_ANON_KEY
   );
 
-  console.log("Supabase conectado:", supabaseClient);
+  console.log("✅ Supabase conectado", supabaseClient);
 
   /* ===============================
      TOASTS
@@ -49,12 +55,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const validarEmail = el => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!re.test(el.value.trim())) {
-      el.classList.add("input-error");
-      return false;
-    }
-    el.classList.remove("input-error");
-    return true;
+    return validarCampo(el) && re.test(el.value);
   };
 
   const validarFormulario = form => {
@@ -75,41 +76,27 @@ document.addEventListener("DOMContentLoaded", () => {
   =============================== */
   async function enviarFormulario(form, tabla, mensaje) {
 
-    const feedbackPrevio = form.querySelector(".form-feedback");
-    if (feedbackPrevio) feedbackPrevio.remove();
-
-    const feedback = document.createElement("div");
-    feedback.className = "form-feedback";
-    feedback.textContent = "Enviando...";
-    form.appendChild(feedback);
-
     const datos = Object.fromEntries(
       [...form.elements]
         .filter(el => el.name)
         .map(el => [el.name, el.value.trim()])
     );
 
-    console.log("Insertando en:", tabla, datos);
+    console.log("📤 Insertando en:", tabla, datos);
 
     const { data, error } = await supabaseClient
       .from(tabla)
-      .insert([datos])
-      .select();
+      .insert([datos]);
 
     if (error) {
-      console.error("ERROR SUPABASE:", error);
-      feedback.classList.add("error");
-      feedback.textContent = error.message;
-      mostrarToast("Error al enviar", "error");
+      console.error("❌ Supabase error:", error);
+      mostrarToast(error.message, "error");
       return;
     }
 
-    console.log("INSERT OK:", data);
-
-    feedback.classList.add("success");
-    feedback.textContent = mensaje;
-    form.reset();
+    console.log("✅ Insert OK:", data);
     mostrarToast(mensaje, "success");
+    form.reset();
   }
 
   /* ===============================
@@ -118,30 +105,34 @@ document.addEventListener("DOMContentLoaded", () => {
   const formComercios = document.getElementById("comercios");
   const formUsuarios = document.getElementById("usuarios");
 
-  formComercios?.addEventListener("submit", e => {
-    e.preventDefault();
-    if (validarFormulario(formComercios)) {
-      enviarFormulario(
-        formComercios,
-        "comercios",
-        "Gracias por registrar tu comercio."
-      );
-    } else {
-      mostrarToast("Revisá los campos", "error");
-    }
-  });
+  if (formComercios) {
+    formComercios.addEventListener("submit", e => {
+      e.preventDefault();
+      if (validarFormulario(formComercios)) {
+        enviarFormulario(
+          formComercios,
+          "comercios",
+          "Gracias por registrar tu comercio"
+        );
+      } else {
+        mostrarToast("Revisá los campos", "error");
+      }
+    });
+  }
 
-  formUsuarios?.addEventListener("submit", e => {
-    e.preventDefault();
-    if (validarFormulario(formUsuarios)) {
-      enviarFormulario(
-        formUsuarios,
-        "usuarios",
-        "Gracias por tu interés."
-      );
-    } else {
-      mostrarToast("Revisá los campos", "error");
-    }
-  });
+  if (formUsuarios) {
+    formUsuarios.addEventListener("submit", e => {
+      e.preventDefault();
+      if (validarFormulario(formUsuarios)) {
+        enviarFormulario(
+          formUsuarios,
+          "usuarios",
+          "Gracias por tu interés"
+        );
+      } else {
+        mostrarToast("Revisá los campos", "error");
+      }
+    });
+  }
 
 });
