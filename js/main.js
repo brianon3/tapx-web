@@ -1,4 +1,4 @@
-// main.js — TAPX 5.3 iOS SAFE
+// main.js — TAPX 5.4 iOS SAFE (afinada)
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -22,23 +22,108 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function mostrarToast(msg, tipo) {
       if (!toastContainer) return;
-
       const toast = document.createElement("div");
       toast.className = "toast " + (tipo || "success");
       toast.textContent = msg;
-
       toastContainer.appendChild(toast);
       setTimeout(() => toast.classList.add("show"), 10);
-
       setTimeout(() => {
         toast.classList.remove("show");
         setTimeout(() => toast.remove(), 300);
       }, 3000);
     }
 
-    // ✅ NUEVA FUNCIÓN — aviso de registro exitoso (más profesional)
-    function mostrarExitoRegistro(mensaje) {
-      mostrarToast(mensaje, "success");
+    /* ===============================
+       ANALYTICS (SILENCIOSO)
+    =============================== */
+    function logEvent(event, data = {}) {
+      supabase.from("events").insert([{
+        event,
+        ...data,
+        ts: new Date()
+      }]).catch(() => {});
+    }
+
+    /* ===============================
+       MODAL DE ÉXITO PRO
+    =============================== */
+    function mostrarModalExito(mensaje, tipo = "default") {
+      const AUTO_CLOSE_MS = 4000;
+
+      const themes = {
+        comercio: { bg: "#0f172a", accent: "#38bdf8", icon: "🎉" },
+        usuario: { bg: "#111", accent: "#22c55e", icon: "✅" },
+        default: { bg: "#111", accent: "#22c55e", icon: "✔️" }
+      };
+
+      const theme = themes[tipo] || themes.default;
+
+      const overlay = document.createElement("div");
+      overlay.style.cssText = `
+        position: fixed;
+        inset: 0;
+        background: rgba(0,0,0,.55);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        opacity: 0;
+        transition: opacity .25s ease;
+      `;
+
+      const modal = document.createElement("div");
+      modal.style.cssText = `
+        background: ${theme.bg};
+        color: #fff;
+        padding: 26px;
+        max-width: 420px;
+        width: 90%;
+        border-radius: 14px;
+        text-align: center;
+        box-shadow: 0 20px 40px rgba(0,0,0,.4);
+        transform: scale(.9);
+        opacity: 0;
+        transition: transform .25s ease, opacity .25s ease;
+      `;
+
+      modal.innerHTML = `
+        <div style="font-size:32px; margin-bottom:10px; animation: pop .4s ease;">
+          ${theme.icon}
+        </div>
+        <div style="font-size:18px; line-height:1.4; margin-bottom:18px;">
+          ${mensaje}
+        </div>
+        <button style="
+          padding: 10px 22px;
+          border: none;
+          border-radius: 8px;
+          background: ${theme.accent};
+          color: #000;
+          font-weight: 600;
+          cursor: pointer;
+        ">Aceptar</button>
+      `;
+
+      const cerrar = () => {
+        modal.style.transform = "scale(.9)";
+        modal.style.opacity = "0";
+        overlay.style.opacity = "0";
+        setTimeout(() => overlay.remove(), 250);
+      };
+
+      modal.querySelector("button").addEventListener("click", cerrar);
+      overlay.addEventListener("click", e => e.target === overlay && cerrar());
+
+      overlay.appendChild(modal);
+      document.body.appendChild(overlay);
+
+      requestAnimationFrame(() => {
+        overlay.style.opacity = "1";
+        modal.style.transform = "scale(1)";
+        modal.style.opacity = "1";
+      });
+
+      setTimeout(cerrar, AUTO_CLOSE_MS);
     }
 
     /* ===============================
@@ -46,81 +131,75 @@ document.addEventListener("DOMContentLoaded", () => {
     =============================== */
     function validarFormulario(form) {
       let ok = true;
-
-      Array.prototype.forEach.call(
-        form.querySelectorAll("input, select"),
-        el => {
-          if (!el.required) return;
-
-          if (!el.value || !el.value.trim()) {
-            el.classList.add("input-error");
-            ok = false;
-          } else {
-            el.classList.remove("input-error");
-          }
+      Array.prototype.forEach.call(form.querySelectorAll("input, select"), el => {
+        if (!el.required) return;
+        if (!el.value || !el.value.trim()) {
+          el.classList.add("input-error");
+          ok = false;
+        } else {
+          el.classList.remove("input-error");
         }
-      );
-
+      });
       return ok;
     }
 
     /* ===============================
-       ENVÍO A SUPABASE (iOS SAFE)
+       ENVÍO A SUPABASE
     =============================== */
-    async function enviarFormulario(form, tabla, mensaje) {
+    async function enviarFormulario(form, tabla, mensajes, tipo) {
       const datos = {};
-
       Array.prototype.forEach.call(form.elements, el => {
-        if (el.name) {
-          datos[el.name] = el.value ? el.value.trim() : "";
-        }
+        if (el.name) datos[el.name] = el.value?.trim() || "";
       });
 
-      console.log("📤 Insertando en", tabla, datos);
+      const mensaje =
+        mensajes[Math.floor(Math.random() * mensajes.length)];
 
       const result = await supabase.from(tabla).insert([datos]);
 
       if (result.error) {
-        console.error("❌ Supabase:", result.error);
         mostrarToast("Error al enviar", "error");
+        logEvent("submit_error", { tipo });
         return;
       }
 
-      // 🔁 CAMBIO EXACTO: antes mostrarToast → ahora mostrarExitoRegistro
-      mostrarExitoRegistro(mensaje);
+      logEvent("submit_success", { tipo });
+      mostrarModalExito(mensaje, tipo);
       form.reset();
     }
 
     /* ===============================
        EVENTOS
     =============================== */
-    const comercios = document.getElementById("comercios");
-    if (comercios) {
-      comercios.addEventListener("submit", e => {
-        e.preventDefault();
-        validarFormulario(e.target)
-          ? enviarFormulario(
-              e.target,
-              "comercios",
-              "🎉 Registro completado con éxito. ¡Gracias por sumar tu comercio!"
-            )
-          : mostrarToast("Revisá los campos", "error");
-      });
-    }
+    document.getElementById("comercios")?.addEventListener("submit", e => {
+      e.preventDefault();
+      validarFormulario(e.target)
+        ? enviarFormulario(
+            e.target,
+            "comercios",
+            [
+              "🎉 Registro completado con éxito.<br>Gracias por sumar tu comercio.",
+              "🚀 Comercio registrado correctamente.<br>Te contactaremos pronto."
+            ],
+            "comercio"
+          )
+        : mostrarToast("Revisá los campos", "error");
+    });
 
-    const usuarios = document.getElementById("usuarios");
-    if (usuarios) {
-      usuarios.addEventListener("submit", e => {
-        e.preventDefault();
-        validarFormulario(e.target)
-          ? enviarFormulario(
-              e.target,
-              "usuarios",
-              "✅ Registro exitoso. ¡Gracias por tu interés! Nos pondremos en contacto a la brevedad 😊"
-            )
-          : mostrarToast("Revisá los campos", "error");
-      });
-    }
+    document.getElementById("usuarios")?.addEventListener("submit", e => {
+      e.preventDefault();
+      validarFormulario(e.target)
+        ? enviarFormulario(
+            e.target,
+            "usuarios",
+            [
+              "✅ Registro exitoso.<br>Te contactaremos a la brevedad 😊",
+              "💚 Gracias por registrarte.<br>Pronto tendrás novedades."
+            ],
+            "usuario"
+          )
+        : mostrarToast("Revisá los campos", "error");
+    });
 
   } catch (err) {
     console.error("🔥 Error JS:", err);
