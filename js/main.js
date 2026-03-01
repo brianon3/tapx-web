@@ -1,4 +1,4 @@
-// main.js — TAPX 5.4 iOS SAFE (afinada)
+// main.js — TAPX 5.3 iOS SAFE
 
 import { createClient } from "https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm";
 
@@ -16,17 +16,20 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log("✅ Supabase conectado");
 
     /* ===============================
-       TOASTS
+       TOASTS (errores / avisos menores)
     =============================== */
     const toastContainer = document.getElementById("toast-container");
 
     function mostrarToast(msg, tipo) {
       if (!toastContainer) return;
+
       const toast = document.createElement("div");
       toast.className = "toast " + (tipo || "success");
       toast.textContent = msg;
+
       toastContainer.appendChild(toast);
       setTimeout(() => toast.classList.add("show"), 10);
+
       setTimeout(() => {
         toast.classList.remove("show");
         setTimeout(() => toast.remove(), 300);
@@ -34,29 +37,11 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ===============================
-       ANALYTICS (SILENCIOSO)
+       MODAL DE ÉXITO PRO (animado + autocierre)
     =============================== */
-    function logEvent(event, data = {}) {
-      supabase.from("events").insert([{
-        event,
-        ...data,
-        ts: new Date()
-      }]).catch(() => {});
-    }
-
-    /* ===============================
-       MODAL DE ÉXITO PRO
-    =============================== */
-    function mostrarModalExito(mensaje, tipo = "default") {
+    function mostrarModalExito(mensaje) {
+      const REDIRECT_URL = "#"; // ← cambiá esto si querés ir a otra página
       const AUTO_CLOSE_MS = 4000;
-
-      const themes = {
-        comercio: { bg: "#0f172a", accent: "#38bdf8", icon: "🎉" },
-        usuario: { bg: "#111", accent: "#22c55e", icon: "✅" },
-        default: { bg: "#111", accent: "#22c55e", icon: "✔️" }
-      };
-
-      const theme = themes[tipo] || themes.default;
 
       const overlay = document.createElement("div");
       overlay.style.cssText = `
@@ -73,7 +58,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       const modal = document.createElement("div");
       modal.style.cssText = `
-        background: ${theme.bg};
+        background: #111;
         color: #fff;
         padding: 26px;
         max-width: 420px;
@@ -87,9 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
       `;
 
       modal.innerHTML = `
-        <div style="font-size:32px; margin-bottom:10px; animation: pop .4s ease;">
-          ${theme.icon}
-        </div>
         <div style="font-size:18px; line-height:1.4; margin-bottom:18px;">
           ${mensaje}
         </div>
@@ -97,33 +79,46 @@ document.addEventListener("DOMContentLoaded", () => {
           padding: 10px 22px;
           border: none;
           border-radius: 8px;
-          background: ${theme.accent};
+          background: #22c55e;
           color: #000;
           font-weight: 600;
           cursor: pointer;
         ">Aceptar</button>
       `;
 
-      const cerrar = () => {
+      function cerrarModal() {
         modal.style.transform = "scale(.9)";
         modal.style.opacity = "0";
         overlay.style.opacity = "0";
-        setTimeout(() => overlay.remove(), 250);
-      };
 
-      modal.querySelector("button").addEventListener("click", cerrar);
-      overlay.addEventListener("click", e => e.target === overlay && cerrar());
+        setTimeout(() => {
+          overlay.remove();
+          if (REDIRECT_URL) {
+            window.location.href = REDIRECT_URL;
+          }
+        }, 250);
+      }
+
+      // Cerrar con botón
+      modal.querySelector("button").addEventListener("click", cerrarModal);
+
+      // Cerrar tocando fuera
+      overlay.addEventListener("click", e => {
+        if (e.target === overlay) cerrarModal();
+      });
 
       overlay.appendChild(modal);
       document.body.appendChild(overlay);
 
+      // Animación entrada
       requestAnimationFrame(() => {
         overlay.style.opacity = "1";
         modal.style.transform = "scale(1)";
         modal.style.opacity = "1";
       });
 
-      setTimeout(cerrar, AUTO_CLOSE_MS);
+      // Auto-cierre
+      setTimeout(cerrarModal, AUTO_CLOSE_MS);
     }
 
     /* ===============================
@@ -131,40 +126,43 @@ document.addEventListener("DOMContentLoaded", () => {
     =============================== */
     function validarFormulario(form) {
       let ok = true;
-      Array.prototype.forEach.call(form.querySelectorAll("input, select"), el => {
-        if (!el.required) return;
-        if (!el.value || !el.value.trim()) {
-          el.classList.add("input-error");
-          ok = false;
-        } else {
-          el.classList.remove("input-error");
+
+      Array.prototype.forEach.call(
+        form.querySelectorAll("input, select"),
+        el => {
+          if (!el.required) return;
+
+          if (!el.value || !el.value.trim()) {
+            el.classList.add("input-error");
+            ok = false;
+          } else {
+            el.classList.remove("input-error");
+          }
         }
-      });
+      );
+
       return ok;
     }
 
     /* ===============================
        ENVÍO A SUPABASE
     =============================== */
-    async function enviarFormulario(form, tabla, mensajes, tipo) {
+    async function enviarFormulario(form, tabla, mensaje) {
       const datos = {};
+
       Array.prototype.forEach.call(form.elements, el => {
         if (el.name) datos[el.name] = el.value?.trim() || "";
       });
 
-      const mensaje =
-        mensajes[Math.floor(Math.random() * mensajes.length)];
-
       const result = await supabase.from(tabla).insert([datos]);
 
       if (result.error) {
+        console.error("❌ Supabase:", result.error);
         mostrarToast("Error al enviar", "error");
-        logEvent("submit_error", { tipo });
         return;
       }
 
-      logEvent("submit_success", { tipo });
-      mostrarModalExito(mensaje, tipo);
+      mostrarModalExito(mensaje);
       form.reset();
     }
 
@@ -177,11 +175,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? enviarFormulario(
             e.target,
             "comercios",
-            [
-              "🎉 Registro completado con éxito.<br>Gracias por sumar tu comercio.",
-              "🚀 Comercio registrado correctamente.<br>Te contactaremos pronto."
-            ],
-            "comercio"
+            "🎉 Registro completado con éxito.<br>Gracias por sumar tu comercio."
           )
         : mostrarToast("Revisá los campos", "error");
     });
@@ -192,11 +186,7 @@ document.addEventListener("DOMContentLoaded", () => {
         ? enviarFormulario(
             e.target,
             "usuarios",
-            [
-              "✅ Registro exitoso.<br>Te contactaremos a la brevedad 😊",
-              "💚 Gracias por registrarte.<br>Pronto tendrás novedades."
-            ],
-            "usuario"
+            "✅ Registro exitoso.<br>Gracias por tu interés, te contactaremos a la brevedad 😊"
           )
         : mostrarToast("Revisá los campos", "error");
     });
