@@ -36,6 +36,11 @@ document.addEventListener("DOMContentLoaded", () => {
       }, 3000);
     }
 
+    // ✅ NUEVA FUNCIÓN — aviso de registro exitoso (más profesional)
+    function mostrarExitoRegistro(mensaje) {
+      mostrarToast(mensaje, "success");
+    }
+
     /* ===============================
        VALIDACIÓN
     =============================== */
@@ -81,7 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
       }
 
-      mostrarToast(mensaje, "success");
+      // 🔁 CAMBIO EXACTO: antes mostrarToast → ahora mostrarExitoRegistro
+      mostrarExitoRegistro(mensaje);
       form.reset();
     }
 
@@ -93,7 +99,11 @@ document.addEventListener("DOMContentLoaded", () => {
       comercios.addEventListener("submit", e => {
         e.preventDefault();
         validarFormulario(e.target)
-          ? enviarFormulario(e.target, "comercios", "Gracias por registrar tu comercio")
+          ? enviarFormulario(
+              e.target,
+              "comercios",
+              "🎉 Registro completado con éxito. ¡Gracias por sumar tu comercio!"
+            )
           : mostrarToast("Revisá los campos", "error");
       });
     }
@@ -103,7 +113,11 @@ document.addEventListener("DOMContentLoaded", () => {
       usuarios.addEventListener("submit", e => {
         e.preventDefault();
         validarFormulario(e.target)
-          ? enviarFormulario(e.target, "usuarios", "Gracias por tu interés")
+          ? enviarFormulario(
+              e.target,
+              "usuarios",
+              "✅ Registro exitoso. ¡Gracias por tu interés! Nos pondremos en contacto a la brevedad 😊"
+            )
           : mostrarToast("Revisá los campos", "error");
       });
     }
