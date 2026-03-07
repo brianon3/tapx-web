@@ -615,3 +615,180 @@ background:var(--accent);
 color:white;
 
 }
+
+/* =========================================================
+   MOBILE UX IMPROVEMENTS
+   Mejoras específicas para celulares
+   ========================================================= */
+
+
+/* =========================
+   TOUCH FRIENDLY BUTTONS
+   Botones más cómodos para dedo
+========================= */
+
+@media (max-width:768px){
+
+.btn-primary,
+.btn-secondary,
+button{
+
+min-height:48px;
+
+font-size:1rem;
+
+}
+
+}
+
+
+/* =========================
+   HERO MOBILE OPTIMIZATION
+   Reduce espacio excesivo
+========================= */
+
+@media (max-width:600px){
+
+header{
+
+padding:60px 20px 70px;
+
+}
+
+.logo{
+
+width:110px;
+
+}
+
+h1{
+
+font-size:2rem;
+
+}
+
+header p{
+
+font-size:1rem;
+
+}
+
+}
+
+
+/* =========================
+   STACK CTA BUTTONS
+   Mejor para pantallas chicas
+========================= */
+
+@media (max-width:500px){
+
+.cta-buttons{
+
+flex-direction:column;
+
+align-items:center;
+
+}
+
+.btn-primary,
+.btn-secondary{
+
+width:100%;
+
+max-width:320px;
+
+}
+
+}
+
+
+/* =========================
+   FORMS MOBILE IMPROVEMENT
+========================= */
+
+@media (max-width:600px){
+
+.forms{
+
+grid-template-columns:1fr;
+
+}
+
+form{
+
+padding:22px;
+
+}
+
+}
+
+
+/* =========================
+   CARD COMFORT SPACING
+========================= */
+
+@media (max-width:600px){
+
+.card{
+
+padding:22px;
+
+}
+
+.steps{
+
+gap:16px;
+
+}
+
+}
+
+
+/* =========================
+   BETTER MOBILE TEXT
+========================= */
+
+@media (max-width:480px){
+
+p{
+
+font-size:.97rem;
+
+line-height:1.6;
+
+}
+
+h2{
+
+font-size:1.65rem;
+
+}
+
+}
+
+
+/* =========================
+   PREVENT MOBILE ZOOM
+========================= */
+
+input,
+select,
+button{
+
+font-size:16px;
+
+}
+
+
+/* =========================
+   SAFE AREA (iPhone notch)
+========================= */
+
+body{
+
+padding-left:env(safe-area-inset-left);
+
+padding-right:env(safe-area-inset-right);
+
+}
