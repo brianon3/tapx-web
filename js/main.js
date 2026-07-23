@@ -8,9 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ===============================
        SUPABASE INIT
     =============================== */
-    const SUPABASE_URL = "https://ywxpvbkwlblrcyxuxsop.supabase.co";
+    const SUPABASE_URL = "https://bwzvyygajbnhvjdadevl.supabase.co/rest/v1/";
     const SUPABASE_ANON_KEY =
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl3eHB2Ymt3bGJscmN5eHV4c29wIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzIyMjA2MzIsImV4cCI6MjA4Nzc5NjYzMn0.9qbiglW-JrYySXhsA0CTlZkVamF_tC95s5byyVqxSmc";
+      "sb_publishable_sCcqs_4UZciDn7Tiu3quCQ_6nDmNmsD";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     console.log("✅ Supabase conectado");
