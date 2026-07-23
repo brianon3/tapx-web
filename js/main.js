@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     /* ===============================
        SUPABASE INIT
     =============================== */
-    const SUPABASE_URL = "https://bwzvyygajbnhvjdadevl.supabase.co/rest/v1/";
+    const SUPABASE_URL = "https://bwzvyygajbnhvjdadevl.supabase.co";
     const SUPABASE_ANON_KEY = "sb_publishable_sCcqs_4UZciDn7Tiu3quCQ_6nDmNmsD";
 
     const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
