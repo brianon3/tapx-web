@@ -269,14 +269,22 @@ Sé uno de los primeros comercios en acceder a la red de alianzas comerciales Ta
 
     <input name="nombre_comercio" type="text" placeholder="Nombre del comercio" required>
     
-    <select name="rubro" required>
+    <select id="rubro" name="rubro" required>
       <option value="" disabled selected>Rubro</option>
-      <option>Cafetería</option>
-      <option>Heladería</option>
-      <option>Restaurante</option>
-      <option>Servicios</option>
-      <option>Otro</option>
+      <option value="Cafetería">Cafetería</option>
+      <option value="Heladería">Heladería</option>
+      <option value="Restaurante">Restaurante</option>
+      <option value="Servicios">Servicios</option>
+      <option value="Otro">Otro</option>
     </select>
+
+    <input
+      id="otro_rubro"
+      name="otro_rubro"
+      type="text"
+      placeholder="Especificá el rubro"
+      style="display:none;"
+    >
     
     <input name="ciudad" type="text" placeholder="Ciudad" required>
     <input name="nombre_contacto" type="text" placeholder="Nombre de contacto" required>

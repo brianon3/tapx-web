@@ -166,6 +166,26 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     /* ===============================
+       CAMPO "OTRO" EN RUBRO
+    =============================== */
+
+    const rubro = document.getElementById("rubro");
+    const otroRubro = document.getElementById("otro_rubro");
+
+    if (rubro && otroRubro) {
+      rubro.addEventListener("change", () => {
+        if (rubro.value === "Otro") {
+          otroRubro.style.display = "block";
+          otroRubro.required = true;
+        } else {
+          otroRubro.style.display = "none";
+          otroRubro.required = false;
+          otroRubro.value = "";
+        }
+      });
+    }
+
+    /* ===============================
        EVENTOS
     =============================== */
     document.getElementById("comercios")?.addEventListener("submit", e => {
