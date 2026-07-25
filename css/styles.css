@@ -828,3 +828,12 @@ padding-right:env(safe-area-inset-right);
         transform: translateY(5px);
     }
 }
+
+.section-image{
+    display:block;
+    width:100%;
+    max-width:900px;
+    margin:35px auto;
+    border-radius:18px;
+    box-shadow:0 10px 35px rgba(0,0,0,.15);
+}
