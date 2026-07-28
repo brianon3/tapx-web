@@ -344,15 +344,29 @@ Sé uno de los primeros comercios en acceder a la red de alianzas comerciales Ta
     <input name="nombre" type="text" placeholder="Nombre completo" required>
     <input name="email" type="email" placeholder="Email" required>
     
-    <select name="tipo_documento" required>
+    <select id="tipo_documento_usuario" name="tipo_documento" required>
       <option value="" disabled selected>Tipo de documento</option>
       <option value="cedula">Cédula de identidad</option>
       <option value="dni">DNI</option>
       <option value="pasaporte">Pasaporte</option>
       <option value="otro">Otro</option>
     </select>
+
+    <input
+        id="otro_tipo_documento_usuario"
+        name="otro_tipo_documento_usuario"
+        type="text"
+        placeholder="Especificá el tipo de documento"
+        style="display:none;"
+    >
+
+    <input
+        name="numero_documento"
+        type="text"
+        placeholder="Número de documento"
+        required
+    >
     
-    <input name="numero_documento" type="text" placeholder="Número de documento" required>
     <input name="telefono" type="tel" placeholder="Teléfono de contacto" required>
     
     <button type="submit">Quiero acceso anticipado</button>

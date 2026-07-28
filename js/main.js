@@ -185,6 +185,22 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+    const tipoDocumentoUsuario = document.getElementById("tipo_documento_usuario");
+    const otroTipoDocumentoUsuario = document.getElementById("otro_tipo_documento_usuario");
+
+    if (tipoDocumentoUsuario && otroTipoDocumentoUsuario) {
+      tipoDocumentoUsuario.addEventListener("change", () => {
+        if (tipoDocumentoUsuario.value === "otro") {
+          otroTipoDocumentoUsuario.style.display = "block";
+          otroTipoDocumentoUsuario.required = true;
+        } else {
+          otroTipoDocumentoUsuario.style.display = "none";
+          otroTipoDocumentoUsuario.required = false;
+          otroTipoDocumentoUsuario.value = "";
+        }
+      });
+    }
+
         /* ===============================
       CAMPO "OTRO" EN TIPO DE IDENTIFICACIÓN
     =============================== */
