@@ -307,7 +307,7 @@ Sé uno de los primeros comercios en acceder a la red de alianzas comerciales Ta
     <input name="nombre_contacto" type="text" placeholder="Nombre de contacto" required>
     <input name="email" type="email" placeholder="Email del comercio" required>
     
-    <select name="tipo_documento" required>
+    <select id="tipo_documento_comercio" name="tipo_documento" required>
       <option value="" disabled selected>Tipo de identificación</option>
       <option value="rut">RUT / CUIT / RFC</option>
       <option value="cedula">Cédula de identidad</option>
@@ -315,8 +315,22 @@ Sé uno de los primeros comercios en acceder a la red de alianzas comerciales Ta
       <option value="pasaporte">Pasaporte</option>
       <option value="otro">Otro</option>
     </select>
+
+    <input
+        id="otro_tipo_documento"
+        name="otro_tipo_documento"
+        type="text"
+        placeholder="Especificá el tipo de identificación"
+        style="display:none;"
+    >
+
+    <input
+        name="numero_documento"
+        type="text"
+        placeholder="Número de identificación"
+        required
+    >
     
-    <input name="numero_documento" type="text" placeholder="Número de identificación" required>
     <input name="telefono" type="tel" placeholder="Teléfono de contacto" required>
     
     <button type="submit">Registrar comercio</button>
