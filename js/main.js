@@ -185,6 +185,34 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
 
+        /* ===============================
+      CAMPO "OTRO" EN TIPO DE IDENTIFICACIÓN
+    =============================== */
+
+    const tipoDocumentoComercio = document.getElementById("tipo_documento_comercio");
+    const otroTipoDocumento = document.getElementById("otro_tipo_documento");
+
+    if (tipoDocumentoComercio && otroTipoDocumento) {
+
+      tipoDocumentoComercio.addEventListener("change", () => {
+
+        if (tipoDocumentoComercio.value === "otro") {
+
+          otroTipoDocumento.style.display = "block";
+          otroTipoDocumento.required = true;
+
+        } else {
+
+          otroTipoDocumento.style.display = "none";
+          otroTipoDocumento.required = false;
+          otroTipoDocumento.value = "";
+
+        }
+
+      });
+
+    }
+
     /* ===============================
        EVENTOS
     =============================== */
